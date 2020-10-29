@@ -1,4 +1,4 @@
-function [bpmEstimate, relScore, allVals] = autocorrelation2(inputData)
+function [bpmEstimate, relScore, allVals] = autocorrelation(inputData)
 % Given a subsection of the data, estimates the frequency for the
 % subsection
 
@@ -21,7 +21,6 @@ function [bpmEstimate, relScore, allVals] = autocorrelation2(inputData)
     end
 
     fuseResults = scorrResults .* amdfResults;
-%     fuseResults = amdfResults;
     scorrResults = fuseResults;
 
     [~, bestNIdces] = findpeaks(scorrResults);
@@ -69,15 +68,4 @@ function relScore = assignRelScore(scorrResults)
     relevantNIdces = rmmissing(relevantNIdces);
     relScore = sum(abs(scorrResults(relevantNIdces))) / sum(abs(scorrResults));
     relScore = min(1, relScore * 80); % factor to scale w/ pd
-
-%         f = 1;
-%     if ishandle(f)
-%         clf(f)
-%     end
-%     figure(f)
-%     bpms = fs * 60 ./ (Nmin:Nmin+numel(scorrResults)-1);
-%     plot(bpms,scorrResults)
-%     hold on
-%     goodBpms = bpms(relevantNIdces);
-%     scatter(goodBpms, scorrResults(relevantNIdces), 50, 'x')
 end

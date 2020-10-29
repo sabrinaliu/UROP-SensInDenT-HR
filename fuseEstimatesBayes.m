@@ -1,4 +1,4 @@
-function [finalEst, chosenProbs] = fuseEstimatesBayes2(estimates)
+function [finalEst, chosenProbs] = fuseEstimatesBayes(estimates)
 % Given mxn matrix of estimates where each row is an estimate from one
 % sensor/estimator and n is the number of segment cuts for this patient,
 % return the best estimate
@@ -12,8 +12,8 @@ function [finalEst, chosenProbs] = fuseEstimatesBayes2(estimates)
     for k = 1:numSegs
         mu = nan(1, numEst);
         sd = nan(1, numEst);
-        start = 1;
-%         start = max(1, k - 6);
+%         start = 1;
+        start = max(1, k - 6);
         for l = 1:numEst
             segs = k - start;
             mu(l) = mean(estimates(l, start:k), 'all', 'omitnan');
@@ -47,16 +47,5 @@ function [finalEst, chosenProbs] = fuseEstimatesBayes2(estimates)
         [~, idx] = min(abs(goodEst - finalEst(k)));
         goodProbs = probsAll(probsAll(:, k)>threshold, k);
         chosenProbs(k) = min(.1, goodProbs(idx));
-%         chosenProbs(k) = k;
     end
-
-%     for k = 1:60
-%         if std(estimates(:, max(1,k-6):k)) > 10
-%             finalEst(k) = NaN;
-%             chosenProbs(k) = 0;
-%         end
-%     end
-
-%     finalEst(chosenProbs < 10) = NaN;
-%     chosenProbs(chosenProbs < 10) = 0;
 end

@@ -1,6 +1,4 @@
-addpath('/Users/sabrinaliu/SuperUROP/matLabFiles/heartRate/artifactDetection')
-addpath('/Users/sabrinaliu/SuperUROP/matLabFiles/heartRate/estimators')
-addpath('/Users/sabrinaliu/SuperUROP/matLabFiles/util')
+addpath('/Users/sabrinaliu/SuperUROP/matLabFiles/heartRate/finalCode/util')
 
 allEstimates = struct;
 percentInRange = NaN(20, 4); % 4 cols for pd fuse, corr fuse, pd individual, corr individual
@@ -31,15 +29,15 @@ for id = 1:20
         end
         
         for sensor = 1:3
-            filtered = removeArtifacts2(rppg(sensor, currRange));
-            [estBpm(sensor,i), relScr(sensor,i)] = peakDetection3(filtered);
-            [estBpm(sensor+3,i), relScr(sensor+3,i)] = autocorrelation2(filtered);
+            filtered = removeArtifacts(rppg(sensor, currRange));
+            [estBpm(sensor,i), relScr(sensor,i)] = peakDetection(filtered);
+            [estBpm(sensor+3,i), relScr(sensor+3,i)] = autocorrelation(filtered);
         end
     end
     
     fuseBpm = NaN(2,numSegs);
     fuseBpm(1,:) = fuseEstimatesRelScore(estBpm, relScr, [true(1, 3) false(1,3)]);
-    fuseBpm(2,:) = fuseEstimatesBayes2(estBpm);
+    fuseBpm(2,:) = fuseEstimatesBayes(estBpm);
     
     allEstimates(id).numSegs = numSegs;
     allEstimates(id).refBpm = refBpm;

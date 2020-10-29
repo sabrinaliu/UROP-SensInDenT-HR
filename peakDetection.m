@@ -1,4 +1,4 @@
-function [bpmEstimate, relScore, finalFoundPks] = peakDetection3(inputData)
+function [bpmEstimate, relScore, finalFoundPks] = peakDetection(inputData)
 % Given a subsection of the data, estimates the frequency for the
 % subsection
     fs = 250;
@@ -116,30 +116,10 @@ end
 
 function output = assignBpmToTime(peakIndices)
     fs = 250;
-
     output = fs / mean(diff(peakIndices)) * 60;
-
-%     freqs = fs ./ diff(peakIndices) .* 60;
-%     n = numel(freqs);
-%     if n == 1
-%         output = freqs(1);
-%         return
-%     end
-%     mu = mean(freqs);
-% %     sd = std(freqs) * sqrt((n-1) / chi2inv(0.005, n-1));
-%     sd = std(freqs);
-%
-%     probs = normpdf(freqs(:), mu, sd);
-%
-%     sigFreqs = freqs(probs>0.05);
-%     if numel(sigFreqs) == 0
-%         disp('RIP')
-%     end
-%     output = median(sigFreqs);
 end
 
 function meanCorr = assignSigQual(peakIndices, inputData)
-%     disp(peakIndices)
     numPks = numel(peakIndices);
     if numPks <= 1
         meanCorr = 0;
@@ -152,12 +132,6 @@ function meanCorr = assignSigQual(peakIndices, inputData)
 
     halfMedInt = floor(medInterval / 2);
     segs = zeros(numPks, 2*halfMedInt+1);
-
-%     f = 1;
-%     if ishandle(f)
-%         clf(f)
-%     end
-%     figure(f)
 
     skippedPks = 0;
     for i =1:numPks
@@ -172,13 +146,9 @@ function meanCorr = assignSigQual(peakIndices, inputData)
         end
 
         segs(i, :) = inputData(startPt:endPt);
-
-%         hold on;
-%         plot(segs(i,:))
     end
 
     meanSegs = mean(segs, 'omitnan');
-%     plot(meanSegs, 'LineWidth', 5)
 
     totalCorr = 0;
     for i = 1:numPks

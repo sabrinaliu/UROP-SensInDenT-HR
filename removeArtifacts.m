@@ -1,4 +1,4 @@
-function filtered = removeArtifacts2(original)
+function filtered = removeArtifacts(original)
 % Given the original signal (i.e. patient(id).rppg(1)), return a new signal
 % that has been  filtered for artifacts for heart rate estimation
 % By default, assumes isRppg = True
@@ -13,7 +13,7 @@ function filtered = removeArtifacts2(original)
 
     numSamples = numel(original);
 
-    miniWin = 5 * fs; % 1.5s window length
+    miniWin = 5 * fs; % 5s window length
     smoothedData = nan(1, numSamples);
     for winStart = 1:miniWin:numSamples
         winEnd = min(winStart+miniWin-1, numSamples);
@@ -41,7 +41,6 @@ function filtered = removeArtifacts2(original)
     Wn = [fmin, fmax] ./ fs .* 2;
     [b, a] = butter(3, Wn);
     filtered = filtfilt(b, a, smoothedData);
-    %     filtered = bandpass(smoothedData, [fmin, fmax], fs);
 
     baseline = movmean(filtered, floor(1.5*Nmax), 'omitnan');
     filtered = filtered - baseline;
