@@ -1,14 +1,22 @@
-function [finalEst, chosenRelScr] = fuseEstimatesRelScore(estimates, relScores, isPd)
-% Given a mxn matrix of estimates where each row is the estimate from one
-% sensor/estimator and n is the number of segmentCuts for this patient, return a 1xn
-% matrix that contains the fused estimate of the three
+function [finalEst, chosenRelScr] = fuseEstimatesRelScore(estimates, relScores)
+% Input:
+%   estimates: 6xn matrix with all the estimator outputs applied to each
+%   sensor at each time segment
+%   relScores: 6xn matrix storing the signal quality reliability scores
+%   that were calculated by each estimator
+% Output:
+%   finalEst: 1xn matrix that returns the final fused estimate for each
+%   time segment
+%   chosenRelScr: 1xn matrix that returns the final reliability score of the
+%   final estimate for each time segment
 
     [numEst, numSegs] = size(estimates);
+    sensors = numEst / 2;
 
     finalRelScores = nan(numEst, numSegs);
     valScores = nan(numEst, numSegs);
     for i = 1:numEst
-        [finalRelScores(i,:), valScores(i,:)] = assignOverallRelScore(estimates(i,:), relScores(i,:), isPd(i));
+        [finalRelScores(i,:), valScores(i,:)] = assignOverallRelScore(estimates(i,:), relScores(i,:), i <= sensors);
     end
 
     partialRelScores = finalRelScores ./ valScores;
@@ -16,8 +24,8 @@ function [finalEst, chosenRelScr] = fuseEstimatesRelScore(estimates, relScores, 
     duplicates = nan(10*numEst, numSegs);
     for i = 1:numEst
         for j = 1:numSegs
-            numDup = min(10, finalRelScores(i, j));
-            if numDup < 8 && partialRelScores(i, j) < .9
+            numDup = min(10, finalRelScores(i, j)); % Duplicate each estimate
+            if numDup < 7 && partialRelScores(i, j) < .9
                 continue
             end
             duplicates(10*(i-1)+1:10*(i-1)+numDup, j) = estimates(i,j);

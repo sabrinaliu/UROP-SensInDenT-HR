@@ -1,7 +1,11 @@
 function [finalEst, chosenProbs] = fuseEstimatesBayes(estimates)
-% Given mxn matrix of estimates where each row is an estimate from one
-% sensor/estimator and n is the number of segment cuts for this patient,
-% return the best estimate
+% Input:
+%   estimates: mxn matrix, where m is the number of estimates and n is the
+%   number of time segments, stores the estimator outputs
+% Output:
+%   finalEst: 1xn matrix that stores the final fused estimates
+%   chosenProbs: 1xn matrix that stores the computed probability
+%   corresponding to each of the chosen final estimates
 
     [numEst, numSegs] = size(estimates);
 

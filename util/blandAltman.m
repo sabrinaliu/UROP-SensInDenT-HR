@@ -14,15 +14,16 @@ function blandAltman(ref, exp, relScore)
 
     ax = gca;
     ax.XAxisLocation = 'origin';
+    set(gca,'FontSize',14)
 
     hold on
 
     mu = mean(err, 'omitnan');
     sig = std(err, 'omitnan');
-    yline(mu, '--g', "Mean: " + num2str(mu));
-    yline(mu + sig*1.96, '-.r', "+1.96sd: " + num2str(mu + sig*1.96));
-    yline(mu - sig*1.96, '-.r', "-1.96sd: " + num2str(mu - sig*1.96));
-    xlabel('Reference')
-    ylabel('Estimate - Reference')
+    yline(mu, '--g', "Mean: " + num2str(mu), "FontSize", 12);
+    yline(mu + sig*1.96, '-.r', "+1.96sd: " + num2str(mu + sig*1.96), "FontSize", 12);
+    yline(mu - sig*1.96, '-.r', "-1.96sd: " + num2str(mu - sig*1.96), "FontSize", 12);
+    xlabel('Reference', "FontSize", 16)
+    ylabel('Estimate - Reference', "FontSize", 16)
 
 end

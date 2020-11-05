@@ -1,6 +1,15 @@
 function [bpmEstimate, relScore, allVals] = autocorrelation(inputData)
-% Given a subsection of the data, estimates the frequency for the
-% subsection
+% Input:
+%   inputData: 1xn float matrix, where n is the number of samples, storing
+%   a single sensor's data for the current time segment
+% Output:
+%   bpmEstimate: float that represents the autocorrelation estimate for
+%   this time segment in beats per minute relScore: float that represents
+%   the signal quality reliability score corresponding to this estimate,
+%   computed by looking at the autocorrelation associated with the
+%   bpmEstimate's lag allVals: 1xm float matrix, where m is the number of
+%   discrete lags that were computed, that stores all computed
+%   autocorrelations
 
     fs = 250;
     numSamples = numel(inputData);
