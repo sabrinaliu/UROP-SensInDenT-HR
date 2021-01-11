@@ -4,12 +4,12 @@ function [bpmEstimate, relScore, allVals] = autocorrelation(inputData)
 %   a single sensor's data for the current time segment
 % Output:
 %   bpmEstimate: float that represents the autocorrelation estimate for
-%   this time segment in beats per minute relScore: float that represents
-%   the signal quality reliability score corresponding to this estimate,
-%   computed by looking at the autocorrelation associated with the
-%   bpmEstimate's lag allVals: 1xm float matrix, where m is the number of
-%   discrete lags that were computed, that stores all computed
-%   autocorrelations
+%   this time segment in beats per minute 
+%   relScore: float that represents the signal quality reliability score 
+%   corresponding to this estimate, computed by looking at the 
+%   autocorrelation associated with the bpmEstimate's lag 
+%   allVals: 1xm float matrix, where m is the number of discrete lags that 
+%   were computed, that stores all computed autocorrelations
 
     fs = 250;
     numSamples = numel(inputData);
@@ -50,6 +50,9 @@ function [bpmEstimate, relScore, allVals] = autocorrelation(inputData)
 end
 
 function relScore = assignRelScore(scorrResults)
+    % Given the correlation results, returns reliability score based on how
+    % much larger in magnitude the correlation peaks are
+    
     fs = 250;
     fmax = 140/60;
     Nmin = floor(fs / fmax);
@@ -62,8 +65,11 @@ function relScore = assignRelScore(scorrResults)
 
     bestNs = bestNIdces - 1 + Nmin;
     bestBpms = fs ./ bestNs .* 60;
-    chosenBpm = max(bestBpms);
+    chosenBpm = max(bestBpms); % bpm estimate is the max peak
 
+    % Due some peaks being taller than others, will sometimes try to line
+    % up large peaks and underestimate the heart rate, includes these
+    % integer multiple peaks when consider how reliable is estimate
     relevantNIdces = bestNIdces;
     if numel(bestBpms) > 1
         for i = 1:numel(bestBpms)
@@ -76,5 +82,5 @@ function relScore = assignRelScore(scorrResults)
 
     relevantNIdces = rmmissing(relevantNIdces);
     relScore = sum(abs(scorrResults(relevantNIdces))) / sum(abs(scorrResults));
-    relScore = min(1, relScore * 80); % factor to scale w/ pd
+    relScore = min(1, relScore * 100); % factor to scale w/ pd
 end

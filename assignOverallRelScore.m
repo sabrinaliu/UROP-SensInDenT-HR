@@ -1,17 +1,18 @@
 function [relScores, valScores, conScores] = assignOverallRelScore(bpmEst, estScores, isPd)
 % Input:
-%   bpmEst: 6xn matrix storing all the heart rate estimates. Each row is
+%   bpmEst: 1xn matrix storing all the heart rate estimates. Each row is
 %   one estimator (consisting of a sensor and estimatory type), each column
 %   is all estimates for that time segment.
-%   estScores: 6xn matrix storing all the estimator reliability scores were
+%   estScores: 1xn matrix storing all the estimator reliability scores were
 %   calculated based on properties of each estimator
-%   isPd: 6x1 boolean vector storing if each row used peak detection or if
+%   isPd: boolean storing if each row used peak detection or if
 %   it did not (and used autocorrelation instead).
 % Output:
-%   relScores: 6xn matrix storing the final reliability score for each
+%   relScores: 1xn matrix storing the final reliability score for each
 %   estimator at each time segment
-%   valScores: 6xn matrix storing the intermediate value scores
-%   conScores: 6xn matrix storing the intermediate consistency scores
+%   valScores: 1xn matrix storing the intermediate value scores
+%   conScores: 1xn matrix storing the intermediate consistency scores
+
     valScores = getValScore(bpmEst, isPd);
     conScores = getConsistencyScore(bpmEst);
 

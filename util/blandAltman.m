@@ -1,6 +1,8 @@
 function blandAltman(ref, exp, relScore, timeInterval)
 % Given sequence of reference values and sequence of experimental values,
 % make Bland-Altman plot
+% If available, color code points with reliability scores
+% Units determined by the timeInterval (default bpm)
 
     err = exp - ref;
 
